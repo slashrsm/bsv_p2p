@@ -29,7 +29,7 @@ defmodule BsvP2p.MixProject do
       {:sobelow, ">= 0.0.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:connection, "~> 1.0.4"},
-      {:bsv, "~> 0.2.6"},
+      {:bsv, "~> 0.2.6"}
     ]
   end
 end
