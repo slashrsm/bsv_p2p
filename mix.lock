@@ -1,0 +1,7 @@
+%{
+  "basefiftyeight": {:hex, :basefiftyeight, "0.1.0", "3d48544743bf9aab7ab02aed803ac42af77acf268c7d8c71d4f39e7fa85ee8d3", [:mix], [], "hexpm"},
+  "bsv": {:hex, :bsv, "0.2.6", "b837e684580900fef661b379d677c70b537534d9c5e906a35f774dee702d3d35", [:mix], [{:basefiftyeight, "~> 0.1", [hex: :basefiftyeight, repo: "hexpm", optional: false]}, {:libsecp256k1, "~> 0.1", [hex: :libsecp256k1, repo: "hexpm", optional: false]}], "hexpm"},
+  "connection": {:hex, :connection, "1.0.4", "a1cae72211f0eef17705aaededacac3eb30e6625b04a6117c1b2db6ace7d5976", [:mix], [], "hexpm"},
+  "libsecp256k1": {:hex, :libsecp256k1, "0.1.10", "d27495e2b9851c7765129b76c53b60f5e275bd6ff68292c50536bf6b8d091a4d", [:make, :mix], [{:mix_erlang_tasks, "0.1.0", [hex: :mix_erlang_tasks, repo: "hexpm", optional: false]}], "hexpm"},
+  "mix_erlang_tasks": {:hex, :mix_erlang_tasks, "0.1.0", "36819fec60b80689eb1380938675af215565a89320a9e29c72c70d97512e4649", [:mix], [], "hexpm"},
+}
