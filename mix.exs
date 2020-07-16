@@ -7,7 +7,19 @@ defmodule BsvP2p.MixProject do
       version: "0.1.0",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      elixirc_options: [warnings_as_errors: true],
+      dialyzer: [
+        plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
+        ignore_warnings: ".dialyzer_ignore.exs"
+      ],
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -27,6 +39,7 @@ defmodule BsvP2p.MixProject do
       {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:sobelow, ">= 0.0.0", only: :dev, runtime: false},
+      {:mock, "~> 0.3.5", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
       {:connection, "~> 1.0.4"},
       {:bsv, "~> 0.2.6"}

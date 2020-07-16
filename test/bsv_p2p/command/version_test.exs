@@ -2,6 +2,7 @@ defmodule BsvP2p.Command.VersionTest do
   use ExUnit.Case
   alias BsvP2p.Command
   alias BsvP2p.Command.Version
+  import Mock
   doctest BsvP2p.Command.Version
 
   @test_payload <<205, 129, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 97, 188, 102, 73, 0, 0, 0, 0, 1, 0, 0,
@@ -22,23 +23,41 @@ defmodule BsvP2p.Command.VersionTest do
       timestamp: ~U[2009-01-09 02:54:25Z],
       user_agent: "/bsv_p2p:0.0.0/",
       latest_block: 654_321,
-      recipient: nil,
-      sender: nil
+      recipient: %BsvP2p.Util.NetworkAddress{
+        ip: "127.0.0.1",
+        port: 8333,
+        services: [:node_network]
+      },
+      sender: %BsvP2p.Util.NetworkAddress{ip: "127.0.0.1", port: 8333, services: [:node_network]}
     }
 
     assert @test_payload == Command.get_payload(version)
   end
 
   test "BsvP2p.Command.Version.from_payload/1" do
-    assert %Version{
-             version: 98_765,
-             services: [:node_network],
-             nonce: <<0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08>>,
-             timestamp: ~U[2009-01-09 02:54:25Z],
-             user_agent: "/bsv_p2p:0.0.0/",
-             latest_block: 654_321,
-             recipient: nil,
-             sender: nil
-           } == Version.from_payload(@test_payload)
+    with_mock DateTime,
+      utc_now: fn -> ~U[2009-01-09 02:54:25Z] end,
+      from_unix!: fn 1_231_469_665 -> ~U[2009-01-09 02:54:25Z] end do
+      assert %Version{
+               version: 98_765,
+               services: [:node_network],
+               nonce: <<0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08>>,
+               timestamp: ~U[2009-01-09 02:54:25Z],
+               user_agent: "/bsv_p2p:0.0.0/",
+               latest_block: 654_321,
+               recipient: %BsvP2p.Util.NetworkAddress{
+                 ip: "127.0.0.1",
+                 port: 8333,
+                 services: [:node_network],
+                 timestamp: ~U[2009-01-09 02:54:25Z]
+               },
+               sender: %BsvP2p.Util.NetworkAddress{
+                 ip: "127.0.0.1",
+                 port: 8333,
+                 services: [:node_network],
+                 timestamp: ~U[2009-01-09 02:54:25Z]
+               }
+             } == Version.from_payload(@test_payload)
+    end
   end
 end

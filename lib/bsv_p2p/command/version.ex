@@ -3,6 +3,7 @@ defmodule BsvP2p.Command.Version do
   Bitcoin P2P "version" command.
   """
   alias BSV.Util
+  alias BsvP2p.Util.NetworkAddress
   alias BsvP2p.Util.Services
 
   @version Mix.Project.config()[:version]
@@ -13,9 +14,8 @@ defmodule BsvP2p.Command.Version do
             timestamp: DateTime.utc_now(),
             user_agent: "/bsv_p2p:#{@version}/",
             latest_block: 0,
-            recipient: nil,
-            # TODO determine automatically.
-            sender: nil
+            recipient: %NetworkAddress{},
+            sender: %NetworkAddress{}
 
   @type t :: %__MODULE__{
           version: non_neg_integer,
@@ -24,10 +24,8 @@ defmodule BsvP2p.Command.Version do
           timestamp: DateTime.t(),
           user_agent: String.t(),
           latest_block: non_neg_integer,
-          # TODO
-          recipient: map() | nil,
-          # TODO
-          sender: map() | nil
+          recipient: NetworkAddress.t(),
+          sender: NetworkAddress.t()
         }
 
   defimpl BsvP2p.Command, for: __MODULE__ do
@@ -36,21 +34,11 @@ defmodule BsvP2p.Command.Version do
 
     @spec get_payload(BsvP2p.Command.Version.t()) :: binary
     def get_payload(%BsvP2p.Command.Version{} = command) do
-      services_payload = Services.get_payload(command.services)
-
       <<command.version::integer-unsigned-size(32)-little>> <>
-        <<services_payload::integer-unsigned-size(64)-little>> <>
+        Services.get_payload(command.services) <>
         <<DateTime.to_unix(command.timestamp)::integer-unsigned-size(64)-little>> <>
-        <<0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00>> <>
-        <<0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x7F, 0x00,
-          0x00,
-          0x01>> <>
-        <<0x20, 0x8D>> <>
-        <<0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00>> <>
-        <<0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x7F, 0x00,
-          0x00,
-          0x01>> <>
-        <<0x20, 0x8D>> <>
+        NetworkAddress.get_payload(command.recipient, false) <>
+        NetworkAddress.get_payload(command.sender, false) <>
         command.nonce <>
         Util.VarBin.serialize_bin(command.user_agent) <>
         <<command.latest_block::integer-unsigned-size(32)-little>>
@@ -59,9 +47,9 @@ defmodule BsvP2p.Command.Version do
 
   @spec from_payload(binary) :: BsvP2p.Command.Version.t()
   def from_payload(
-        <<version::integer-unsigned-size(32)-little, services::integer-unsigned-size(64)-little,
-          timestamp::integer-unsigned-size(64)-little, _recipient::binary-size(26),
-          _sender::binary-size(26), nonce::binary-size(8), rest::binary>>
+        <<version::integer-unsigned-size(32)-little, services::binary-size(8),
+          timestamp::integer-unsigned-size(64)-little, recipient::binary-size(26),
+          sender::binary-size(26), nonce::binary-size(8), rest::binary>>
       ) do
     {user_agent, <<latest_block::integer-unsigned-size(32)-little>>} = Util.VarBin.parse_bin(rest)
 
@@ -70,8 +58,8 @@ defmodule BsvP2p.Command.Version do
       services: Services.from_payload(services),
       nonce: nonce,
       timestamp: DateTime.from_unix!(timestamp),
-      recipient: nil,
-      sender: nil,
+      recipient: NetworkAddress.from_payload(recipient),
+      sender: NetworkAddress.from_payload(sender),
       user_agent: user_agent,
       latest_block: latest_block
     }

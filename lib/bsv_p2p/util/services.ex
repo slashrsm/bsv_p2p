@@ -13,9 +13,9 @@ defmodule BsvP2p.Util.Services do
 
   @type t :: :node_netowrk | :node_getutxo | :node_bloom | :node_network_limited
 
-  @spec get_payload([__MODULE__.t()]) :: non_neg_integer
+  @spec get_payload([__MODULE__.t()]) :: binary()
   def get_payload(services) do
-    do_payload(services, 0)
+    <<do_payload(services, 0)::integer-unsigned-size(64)-little>>
   end
 
   @spec do_payload([__MODULE__.t()], non_neg_integer) :: non_neg_integer
@@ -33,8 +33,8 @@ defmodule BsvP2p.Util.Services do
 
   defp do_payload([], payload), do: payload
 
-  @spec from_payload(non_neg_integer) :: [__MODULE__.t()]
-  def from_payload(payload) do
+  @spec from_payload(binary()) :: [__MODULE__.t()]
+  def from_payload(<<payload::integer-unsigned-size(64)-little>>) do
     @service_bits
     |> Enum.map(fn {bits, service} -> {bits &&& payload, service} end)
     |> Enum.filter(fn {present, _service} -> present > 0 end)
