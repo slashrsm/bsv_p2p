@@ -80,6 +80,7 @@ defmodule BsvP2p.Message do
   defp get_command("headers", payload), do: Command.Headers.from_payload(payload)
   defp get_command("getaddr", payload), do: Command.Getaddr.from_payload(payload)
   defp get_command("addr", payload), do: Command.Addr.from_payload(payload)
+  defp get_command("inv", payload), do: Command.Inv.from_payload(payload)
 
   defp get_command(unknown_name, unknown_payload),
     do: %Command.Unknown{name: unknown_name, payload: unknown_payload}
