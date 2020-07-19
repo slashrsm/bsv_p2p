@@ -71,8 +71,18 @@ defmodule BsvP2p.Peer do
   end
 
   defp process_command(%Command.Verack{}, socket, network) do
-    send_command(%Command.Getheaders{}, socket, network)
+    %Command.Getheaders{}
+    # |> Command.Getheaders.set_locator_hashes("000000000000000000a3524a6ab7e3220a55acf6062c5a6e7e7f212450e5d0c6")
+    |> Command.Getheaders.set_stop_hash(
+      "000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd"
+    )
+    |> send_command(socket, network)
   end
+
+  # defp process_command(%Command.Headers{} = command, _socket, _network) do
+  #   IO.inspect command
+  #   :ok
+  # end
 
   defp process_command(_, _socket, _network), do: :ok
 

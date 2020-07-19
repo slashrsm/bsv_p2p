@@ -2,6 +2,7 @@ defmodule BsvP2p.Command.Getheaders do
   @moduledoc """
   Bitcoin P2P "getheaders" command.
   """
+  alias BSV.Util
   alias BSV.Util.VarBin
 
   defstruct version: 70_015,
@@ -49,12 +50,18 @@ defmodule BsvP2p.Command.Getheaders do
 
   @spec set_stop_hash(__MODULE__.t(), String.t() | 0) :: __MODULE__.t()
   def set_stop_hash(command, 0), do: %{command | stop: <<0::integer-size(256)-little>>}
-  def set_stop_hash(command, hash), do: %{command | stop: Base.decode16!(hash, case: :mixed)}
+
+  def set_stop_hash(command, hash),
+    do: %{command | stop: hash |> Base.decode16!(case: :mixed) |> Util.reverse_bin()}
 
   # TODO Add sparse stuff.
   @spec set_locator_hashes(__MODULE__.t(), String.t() | [String.t()]) :: __MODULE__.t()
   def set_locator_hashes(command, hashes) when is_list(hashes) do
-    %{command | locator_hashes: Enum.map(hashes, &Base.decode16!(&1, case: :mixed))}
+    %{
+      command
+      | locator_hashes:
+          Enum.map(hashes, &(&1 |> Base.decode16!(case: :mixed) |> Util.reverse_bin()))
+    }
   end
 
   def set_locator_hashes(command, hash), do: set_locator_hashes(command, [hash])
