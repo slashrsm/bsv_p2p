@@ -78,6 +78,7 @@ defmodule BsvP2p.Message do
   defp get_command("feefilter", payload), do: Command.Feefilter.from_payload(payload)
   defp get_command("getheaders", payload), do: Command.Getheaders.from_payload(payload)
   defp get_command("headers", payload), do: Command.Headers.from_payload(payload)
+  defp get_command("getaddr", payload), do: Command.Getaddr.from_payload(payload)
 
   defp get_command(unknown_name, unknown_payload),
     do: %Command.Unknown{name: unknown_name, payload: unknown_payload}
