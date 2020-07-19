@@ -1,25 +1,25 @@
-defmodule BsvP2p.Command.GetdataTest do
+defmodule BsvP2p.Command.NotfoundTest do
   use ExUnit.Case
   alias BSV.Util
   alias BsvP2p.Command
-  alias BsvP2p.Command.Getdata
+  alias BsvP2p.Command.Notfound
   alias BsvP2p.Util.InventoryVector
-  doctest BsvP2p.Command.Getdata
+  doctest BsvP2p.Command.Notfound
 
   test "Command.name/1" do
-    assert BsvP2p.Command.name(%Getdata{}) == "getdata"
+    assert BsvP2p.Command.name(%Notfound{}) == "notfound"
   end
 
   test "Command.get_payload/1" do
     hash = Util.random_bytes(32)
 
     assert <<1, 1, 0, 0, 0>> <> hash ==
-             Command.get_payload(%Getdata{
+             Command.get_payload(%Notfound{
                vectors: [%InventoryVector{type: :transaction, hash: hash}]
              })
 
     assert <<2, 1, 0, 0, 0>> <> hash <> <<1, 0, 0, 0>> <> hash ==
-             Command.get_payload(%Getdata{
+             Command.get_payload(%Notfound{
                vectors: [
                  %InventoryVector{type: :transaction, hash: hash},
                  %InventoryVector{type: :transaction, hash: hash}
@@ -27,23 +27,23 @@ defmodule BsvP2p.Command.GetdataTest do
              })
 
     assert <<1, 2, 0, 0, 0>> <> hash ==
-             Command.get_payload(%Getdata{vectors: [%InventoryVector{type: :block, hash: hash}]})
+             Command.get_payload(%Notfound{vectors: [%InventoryVector{type: :block, hash: hash}]})
   end
 
-  test "BsvP2p.Command.Getdata.from_payload/1" do
+  test "BsvP2p.Command.Notfound.from_payload/1" do
     hash = Util.random_bytes(32)
 
-    assert %Getdata{vectors: [%InventoryVector{type: :transaction, hash: hash}]} ==
-             Getdata.from_payload(<<1, 1, 0, 0, 0>> <> hash)
+    assert %Notfound{vectors: [%InventoryVector{type: :transaction, hash: hash}]} ==
+             Notfound.from_payload(<<1, 1, 0, 0, 0>> <> hash)
 
-    assert %Getdata{
+    assert %Notfound{
              vectors: [
                %InventoryVector{type: :transaction, hash: hash},
                %InventoryVector{type: :transaction, hash: hash}
              ]
-           } == Getdata.from_payload(<<2, 1, 0, 0, 0>> <> hash <> <<1, 0, 0, 0>> <> hash)
+           } == Notfound.from_payload(<<2, 1, 0, 0, 0>> <> hash <> <<1, 0, 0, 0>> <> hash)
 
-    assert %Getdata{vectors: [%InventoryVector{type: :block, hash: hash}]} ==
-             Getdata.from_payload(<<1, 2, 0, 0, 0>> <> hash)
+    assert %Notfound{vectors: [%InventoryVector{type: :block, hash: hash}]} ==
+             Notfound.from_payload(<<1, 2, 0, 0, 0>> <> hash)
   end
 end

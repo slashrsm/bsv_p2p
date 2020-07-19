@@ -28,7 +28,7 @@ defmodule BsvP2p.Command.InvTest do
              Command.get_payload(%Inv{vectors: [%InventoryVector{type: :block, hash: hash}]})
   end
 
-  test "BsvP2p.Command.Headers.from_payload/1" do
+  test "BsvP2p.Command.Inv.from_payload/1" do
     hash = Util.random_bytes(32)
 
     assert %Inv{vectors: [%InventoryVector{type: :transaction, hash: hash}]} ==
