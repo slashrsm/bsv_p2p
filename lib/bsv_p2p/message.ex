@@ -83,6 +83,7 @@ defmodule BsvP2p.Message do
   defp get_command("inv", payload), do: Command.Inv.from_payload(payload)
   defp get_command("getdata", payload), do: Command.Getdata.from_payload(payload)
   defp get_command("notfound", payload), do: Command.Notfound.from_payload(payload)
+  defp get_command("getblocks", payload), do: Command.Getblocks.from_payload(payload)
 
   defp get_command(unknown_name, unknown_payload),
     do: %Command.Unknown{name: unknown_name, payload: unknown_payload}
