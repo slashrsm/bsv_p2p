@@ -5,6 +5,7 @@ defmodule BsvP2p.Command.Version do
   alias BSV.Util
   alias BsvP2p.Util.NetworkAddress
   alias BsvP2p.Util.Services
+  require Logger
 
   @version Mix.Project.config()[:version]
 
@@ -15,7 +16,8 @@ defmodule BsvP2p.Command.Version do
             user_agent: "/bsv_p2p:#{@version}/",
             latest_block: 0,
             recipient: %NetworkAddress{},
-            sender: %NetworkAddress{}
+            sender: %NetworkAddress{},
+            relay: true
 
   @type t :: %__MODULE__{
           version: non_neg_integer,
@@ -25,7 +27,8 @@ defmodule BsvP2p.Command.Version do
           user_agent: String.t(),
           latest_block: non_neg_integer,
           recipient: NetworkAddress.t(),
-          sender: NetworkAddress.t()
+          sender: NetworkAddress.t(),
+          relay: boolean
         }
 
   defimpl BsvP2p.Command, for: __MODULE__ do
@@ -41,7 +44,8 @@ defmodule BsvP2p.Command.Version do
         NetworkAddress.get_payload(command.sender, false) <>
         command.nonce <>
         Util.VarBin.serialize_bin(command.user_agent) <>
-        <<command.latest_block::integer-unsigned-size(32)-little>>
+        <<command.latest_block::integer-unsigned-size(32)-little>> <>
+        <<if(command.relay, do: 0x01, else: 0x00)>>
     end
   end
 
@@ -51,7 +55,9 @@ defmodule BsvP2p.Command.Version do
           timestamp::integer-unsigned-size(64)-little, recipient::binary-size(26),
           sender::binary-size(26), nonce::binary-size(8), rest::binary>>
       ) do
-    {user_agent, <<latest_block::integer-unsigned-size(32)-little>>} = Util.VarBin.parse_bin(rest)
+    {user_agent,
+     <<latest_block::integer-unsigned-size(32)-little, relay::integer-unsigned-size(8)>>} =
+      Util.VarBin.parse_bin(rest)
 
     %__MODULE__{
       version: version,
@@ -61,7 +67,8 @@ defmodule BsvP2p.Command.Version do
       recipient: NetworkAddress.from_payload(recipient),
       sender: NetworkAddress.from_payload(sender),
       user_agent: user_agent,
-      latest_block: latest_block
+      latest_block: latest_block,
+      relay: relay > 0
     }
   end
 end

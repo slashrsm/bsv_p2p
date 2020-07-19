@@ -7,10 +7,10 @@ defmodule BsvP2p.Application do
 
   def start(_type, _args) do
     children = [
-      # %{
-      #  id: BsvP2p,
-      #  start: {BsvP2p, :start_link, []}
-      # }
+      %{
+        id: BsvP2p.Peer,
+        start: {BsvP2p.Peer, :start_link, []}
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
