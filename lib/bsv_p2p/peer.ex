@@ -70,18 +70,31 @@ defmodule BsvP2p.Peer do
     send_command(%Command.Verack{}, socket, network)
   end
 
-  defp process_command(%Command.Verack{}, socket, network) do
-    %Command.Getheaders{}
+  defp process_command(%Command.Verack{}, _socket, _network) do
+    # %Command.Getheaders{}
     # |> Command.Getheaders.set_locator_hashes("000000000000000000a3524a6ab7e3220a55acf6062c5a6e7e7f212450e5d0c6")
-    |> Command.Getheaders.set_stop_hash(
-      "000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd"
-    )
-    |> send_command(socket, network)
+    # |> Command.Getheaders.set_stop_hash(
+    #  "000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd"
+    # )
+    # |> send_command(socket, network)
+
+    # %Command.Getaddr{}
+    # |> send_command(socket, network)
+
+    # %Command.Getdata{
+    #   vectors: [%BsvP2p.Util.InventoryVector{
+    #     type: :transaction,
+    #     hash:
+    #       Base.decode16!("4D045B7E08DBB3E4A19F98DA0772F3FD43EB0E7F036ABA34B16867BE3D93E358")
+    #       |> BSV.Util.reverse_bin()
+    #   }]
+    # }
+    # |> send_command(socket, network)
   end
 
-  # defp process_command(%Command.Headers{} = command, _socket, _network) do
-  #   IO.inspect command
-  #   :ok
+  # defp process_command(%Command.Tx{} = command, _socket, _network) do
+  #    IO.inspect(command)
+  #    :ok
   # end
 
   defp process_command(_, _socket, _network), do: :ok
