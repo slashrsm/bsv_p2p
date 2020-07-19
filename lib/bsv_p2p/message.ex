@@ -73,6 +73,8 @@ defmodule BsvP2p.Message do
   defp get_command("pong", payload), do: Command.Pong.from_payload(payload)
   defp get_command("verack", payload), do: Command.Verack.from_payload(payload)
   defp get_command("version", payload), do: Command.Version.from_payload(payload)
+  defp get_command("sendheaders", payload), do: Command.Sendheaders.from_payload(payload)
+  defp get_command("feefilter", payload), do: Command.Feefilter.from_payload(payload)
 
   defp get_command(unknown_name, unknown_payload),
     do: %Command.Unknown{name: unknown_name, payload: unknown_payload}
