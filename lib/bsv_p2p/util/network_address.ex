@@ -18,7 +18,7 @@ defmodule BsvP2p.Util.NetworkAddress do
 
   @spec get_payload(__MODULE__.t(), true) :: binary
   def get_payload(%__MODULE__{timestamp: timestamp} = address, true) do
-    <<DateTime.to_unix(timestamp)::integer-unsigned-size(64)-little>> <>
+    <<DateTime.to_unix(timestamp)::integer-unsigned-size(32)-little>> <>
       get_payload(address, false)
   end
 
@@ -35,7 +35,7 @@ defmodule BsvP2p.Util.NetworkAddress do
 
   @spec from_payload(binary) :: __MODULE__.t()
   def from_payload(
-        <<timestamp::integer-unsigned-size(64)-little, services::binary-size(8),
+        <<timestamp::integer-unsigned-size(32)-little, services::binary-size(8),
           ip::binary-size(16), port::integer-size(16)>>
       ) do
     %__MODULE__{

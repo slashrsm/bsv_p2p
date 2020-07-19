@@ -15,7 +15,7 @@ defmodule BsvP2p.Util.NetworkAddressTest do
                false
              )
 
-    assert "a\xBCfI\0\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\d\0\0\x01 \x8D" ==
+    assert "a\xBCfI\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\d\0\0\x01 \x8D" ==
              NetworkAddress.get_payload(
                %NetworkAddress{
                  ip: "127.0.0.1",
@@ -37,7 +37,7 @@ defmodule BsvP2p.Util.NetworkAddressTest do
                false
              )
 
-    assert "a\xBCfI\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\n\0\0\x01\x1F\x90" ==
+    assert "a\xBCfI\x03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\n\0\0\x01\x1F\x90" ==
              NetworkAddress.get_payload(
                %NetworkAddress{
                  ip: "10.0.0.1",
@@ -59,7 +59,7 @@ defmodule BsvP2p.Util.NetworkAddressTest do
                false
              )
 
-    assert "a\xBCfI\0\0\0\0\x03\0\0\0\0\0\0\0 \x01\r\xB8\x85\xA3\0\0\0\0\x8A.\x03ps4\x1F\x90" ==
+    assert "a\xBCfI\x03\0\0\0\0\0\0\0 \x01\r\xB8\x85\xA3\0\0\0\0\x8A.\x03ps4\x1F\x90" ==
              NetworkAddress.get_payload(
                %NetworkAddress{
                  ip: "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
@@ -79,7 +79,7 @@ defmodule BsvP2p.Util.NetworkAddressTest do
              services: [:node_network]
            } ==
              NetworkAddress.from_payload(
-               "a\xBCfI\0\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\d\0\0\x01 \x8D"
+               "a\xBCfI\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\d\0\0\x01 \x8D"
              )
 
     assert %NetworkAddress{
@@ -89,7 +89,7 @@ defmodule BsvP2p.Util.NetworkAddressTest do
              services: [:node_network, :node_getutxo]
            } ==
              NetworkAddress.from_payload(
-               "a\xBCfI\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\n\0\0\x01\x1F\x90"
+               "a\xBCfI\x03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\n\0\0\x01\x1F\x90"
              )
 
     assert %NetworkAddress{
@@ -99,7 +99,7 @@ defmodule BsvP2p.Util.NetworkAddressTest do
              services: [:node_network, :node_getutxo]
            } ==
              NetworkAddress.from_payload(
-               "a\xBCfI\0\0\0\0\x03\0\0\0\0\0\0\0 \x01\r\xB8\x85\xA3\0\0\0\0\x8A.\x03ps4\x1F\x90"
+               "a\xBCfI\x03\0\0\0\0\0\0\0 \x01\r\xB8\x85\xA3\0\0\0\0\x8A.\x03ps4\x1F\x90"
              )
   end
 
