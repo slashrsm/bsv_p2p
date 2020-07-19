@@ -8,7 +8,8 @@ defmodule BsvP2p.Message do
 
   @type t :: Command.Ping.t() | Command.Pong.t() | Command.Version.t() | Command.Verack.t()
 
-  @spec parse(binary) :: [{:ok, NetworkMagic.t(), __MODULE__.t()} | {:error, String.t()}]
+  @spec parse(binary) ::
+          {[{:ok, NetworkMagic.t(), __MODULE__.t()} | {:error, String.t()}], binary()}
   def parse(payload, acc \\ [])
 
   def parse(
@@ -47,7 +48,7 @@ defmodule BsvP2p.Message do
     end
   end
 
-  def parse(<<>>, acc), do: Enum.reverse(acc)
+  def parse(rest, acc), do: {Enum.reverse(acc), rest}
 
   @spec create_payload(__MODULE__.t(), NetworkMagic.t()) :: binary
   def create_payload(command, network) do
@@ -75,6 +76,7 @@ defmodule BsvP2p.Message do
   defp get_command("version", payload), do: Command.Version.from_payload(payload)
   defp get_command("sendheaders", payload), do: Command.Sendheaders.from_payload(payload)
   defp get_command("feefilter", payload), do: Command.Feefilter.from_payload(payload)
+  defp get_command("getheaders", payload), do: Command.Getheaders.from_payload(payload)
 
   defp get_command(unknown_name, unknown_payload),
     do: %Command.Unknown{name: unknown_name, payload: unknown_payload}

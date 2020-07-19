@@ -13,7 +13,7 @@ defmodule BsvP2p.Peer do
   def start_link do
     # We need Connection.start_link/2 now,
     # not GenServer.start_link/2
-    Connection.start_link(__MODULE__, %{socket: nil, network: :main})
+    Connection.start_link(__MODULE__, %{socket: nil, network: :main, rest: <<>>})
   end
 
   def init(state) do
@@ -23,7 +23,7 @@ defmodule BsvP2p.Peer do
   end
 
   def connect(_info, state) do
-    opts = [:binary, active: true]
+    opts = [:binary, active: :once]
     {:ok, socket} = :gen_tcp.connect('localhost', 8333, opts)
 
     :ok = send_version(socket, state.network)
@@ -40,8 +40,12 @@ defmodule BsvP2p.Peer do
   # end
 
   def handle_info({:tcp, socket, message}, %{network: network} = state) do
-    message
-    |> BsvP2p.Message.parse()
+    :inet.setopts(socket, active: :once)
+    # Logger.debug("#{display_message(message)}")
+
+    {commands, rest} = (state.rest <> message) |> BsvP2p.Message.parse()
+
+    commands
     |> Enum.each(fn
       {:ok, ^network, %Command.Unknown{name: name, payload: payload}} ->
         Logger.debug("Unknown message: #{name}, #{display_message(payload)}")
@@ -54,7 +58,7 @@ defmodule BsvP2p.Peer do
         Logger.debug("Unable to process command: #{reason}")
     end)
 
-    {:noreply, state}
+    {:noreply, %{state | rest: rest}}
   end
 
   @spec process_command(Message.t(), port(), NetworkMagic.t()) :: :ok | {:error, atom()}
@@ -64,6 +68,10 @@ defmodule BsvP2p.Peer do
 
   defp process_command(%Command.Version{}, socket, network) do
     send_command(%Command.Verack{}, socket, network)
+  end
+
+  defp process_command(%Command.Verack{}, socket, network) do
+    send_command(%Command.Getheaders{}, socket, network)
   end
 
   defp process_command(_, _socket, _network), do: :ok

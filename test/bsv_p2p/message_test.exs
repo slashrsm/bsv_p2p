@@ -46,8 +46,17 @@ defmodule BsvP2p.Util.MessageTest do
     with_mock DateTime,
       utc_now: fn -> ~U[2009-01-09 02:54:25Z] end,
       from_unix!: fn 1_231_469_665 -> ~U[2009-01-09 02:54:25Z] end do
-      assert [{:ok, :main, @version_command}] == Message.parse(@version_payload)
-      assert [{:ok, :test, %Command.Verack{}}] == Message.parse(@verack_payload)
+      assert {[{:ok, :main, @version_command}], ""} == Message.parse(@version_payload)
+      assert {[{:ok, :test, %Command.Verack{}}], ""} == Message.parse(@verack_payload)
+    end
+  end
+
+  test "Message.parse/1 with extra data" do
+    with_mock DateTime,
+      utc_now: fn -> ~U[2009-01-09 02:54:25Z] end,
+      from_unix!: fn 1_231_469_665 -> ~U[2009-01-09 02:54:25Z] end do
+      assert {[{:ok, :main, @version_command}], <<0xFF, 0xEE, 0xDD, 0xCC>>} ==
+               Message.parse(@version_payload <> <<0xFF, 0xEE, 0xDD, 0xCC>>)
     end
   end
 
@@ -55,19 +64,20 @@ defmodule BsvP2p.Util.MessageTest do
     with_mock DateTime,
       utc_now: fn -> ~U[2009-01-09 02:54:25Z] end,
       from_unix!: fn 1_231_469_665 -> ~U[2009-01-09 02:54:25Z] end do
-      assert [
-               {:ok, :main,
-                %Command.Ping{nonce: <<0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08>>}},
-               {:ok, :main,
-                %Command.Pong{nonce: <<0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08>>}}
-             ] == Message.parse(@ping_payload <> @pong_payload)
+      assert {[
+                {:ok, :main,
+                 %Command.Ping{nonce: <<0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08>>}},
+                {:ok, :main,
+                 %Command.Pong{nonce: <<0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08>>}}
+              ], ""} == Message.parse(@ping_payload <> @pong_payload)
     end
   end
 
   test "Message.parse/1 errors with invalid checksum" do
-    assert [
-             {:error, "Invalid checksum for 'verack': \xFF\xFF\xFF\xFF - ."}
-           ] ==
+    assert {[
+              {:error, "Invalid checksum for 'verack': \xFF\xFF\xFF\xFF - ."}
+            ],
+            ""} ==
              Message.parse(
                <<244, 229, 243, 244, 118, 101, 114, 97, 99, 107, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                  255, 255, 255, 255>>
@@ -75,9 +85,10 @@ defmodule BsvP2p.Util.MessageTest do
   end
 
   test "Message.parse/1 errors with invalid payload" do
-    assert [
-             {:error, "Invalid command: \0\0\0\0, verack, ]\xF6\xE0\xE2, ."}
-           ] ==
+    assert {[
+              {:error, "Invalid command: \0\0\0\0, verack, ]\xF6\xE0\xE2, ."}
+            ],
+            ""} ==
              Message.parse(
                <<0, 0, 0, 0, 118, 101, 114, 97, 99, 107, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 93, 246,
                  224, 226>>
