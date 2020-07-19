@@ -2,8 +2,8 @@ defmodule BsvP2p.Command.Headers do
   @moduledoc """
   Bitcoin P2P "headers" command.
   """
+  alias BSV.Block
   alias BSV.Util.VarBin
-  alias BsvP2p.Block
 
   defstruct headers: []
 
@@ -22,12 +22,12 @@ defmodule BsvP2p.Command.Headers do
           fn
             %Block{transactions: nil} = header, acc ->
               acc <>
-                Block.to_binary(header) <>
+                Block.serialize(header) <>
                 VarBin.serialize_int(0)
 
             header, acc ->
               acc <>
-                Block.to_binary(header) <>
+                Block.serialize(header) <>
                 (header.transactions |> Enum.count() |> VarBin.serialize_int())
           end
         )
@@ -47,6 +47,7 @@ defmodule BsvP2p.Command.Headers do
 
   defp do_get_headers(<<header::binary-size(80), rest::binary>>, acc) do
     {_transaction_count, rest} = VarBin.parse_int(rest)
-    do_get_headers(rest, [Block.create!(header) | acc])
+    {block, ""} = Block.parse(header)
+    do_get_headers(rest, [block | acc])
   end
 end
