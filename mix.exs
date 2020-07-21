@@ -4,7 +4,7 @@ defmodule BsvP2p.MixProject do
   def project do
     [
       app: :bsv_p2p,
-      version: "0.1.0",
+      version: "0.1.0-alpha1",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
