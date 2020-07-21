@@ -42,7 +42,7 @@ defmodule BsvP2p.MixProject do
       {:mock, "~> 0.3.5", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
       {:connection, "~> 1.0.4"},
-      {:bsv, github: "slashrsm/bsv-ex", branch: "block_struct"}
+      {:bsv, github: "slashrsm/bsv-ex"}
     ]
   end
 end

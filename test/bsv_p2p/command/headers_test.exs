@@ -18,11 +18,13 @@ defmodule BsvP2p.Command.HeadersTest do
                headers: [
                  Block.parse(
                    "010000006FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D6190000000000982051FD1E4BA744BBBE680E1FEE14677BA1A3C3540BF7B1CDB606E857233E0E61BC6649FFFF001D01E36299",
+                   false,
                    encoding: :hex
                  )
                  |> elem(0),
                  Block.parse(
                    "010000004860EB18BF1B1620E37E9490FC8A427514416FD75159AB86688E9A8300000000D5FDCC541E25DE1C7A5ADDEDF24858B8BB665C9F36EF744EE42C316022C90F9BB0BC6649FFFF001D08D2BD61",
+                   false,
                    encoding: :hex
                  )
                  |> elem(0)
@@ -35,6 +37,7 @@ defmodule BsvP2p.Command.HeadersTest do
     {header, ""} =
       Block.parse(
         "010000006FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D6190000000000982051FD1E4BA744BBBE680E1FEE14677BA1A3C3540BF7B1CDB606E857233E0E61BC6649FFFF001D01E36299",
+        false,
         encoding: :hex
       )
 
@@ -61,11 +64,13 @@ defmodule BsvP2p.Command.HeadersTest do
              headers: [
                Block.parse(
                  "010000006FE28C0AB6F1B372C1A6A246AE63F74F931E8365E15A089C68D6190000000000982051FD1E4BA744BBBE680E1FEE14677BA1A3C3540BF7B1CDB606E857233E0E61BC6649FFFF001D01E36299",
+                 false,
                  encoding: :hex
                )
                |> elem(0),
                Block.parse(
                  "010000004860EB18BF1B1620E37E9490FC8A427514416FD75159AB86688E9A8300000000D5FDCC541E25DE1C7A5ADDEDF24858B8BB665C9F36EF744EE42C316022C90F9BB0BC6649FFFF001D08D2BD61",
+                 false,
                  encoding: :hex
                )
                |> elem(0)
