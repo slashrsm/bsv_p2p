@@ -14,6 +14,7 @@ defmodule BsvP2p.MixProject do
       source_url: "https://github.com/slashrsm/bsv_p2p",
       deps: deps(),
       description: description(),
+      package: package(),
       elixirc_options: [warnings_as_errors: true],
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
@@ -50,6 +51,16 @@ defmodule BsvP2p.MixProject do
       {:connection, "~> 1.0.4"},
       {:bsv, "~> 0.2.6"},
       #{:bsv, github: "slashrsm/bsv-ex"}
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Janez Urevc"],
+      licenses: ["MIT"],
+      links: %{github: "https://github.com/slashrsm/bsv_p2p"},
+      files:
+        ~w(lib LICENSE.md mix.exs README.md)
     ]
   end
 end
