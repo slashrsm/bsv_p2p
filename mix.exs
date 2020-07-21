@@ -1,13 +1,19 @@
 defmodule BsvP2p.MixProject do
   use Mix.Project
 
+  defp description do
+    "Bitcoin SV server network implementation."
+  end
+
   def project do
     [
       app: :bsv_p2p,
       version: "0.1.0-alpha1",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
+      source_url: "https://github.com/slashrsm/bsv_p2p",
       deps: deps(),
+      description: description(),
       elixirc_options: [warnings_as_errors: true],
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
@@ -42,7 +48,8 @@ defmodule BsvP2p.MixProject do
       {:mock, "~> 0.3.5", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
       {:connection, "~> 1.0.4"},
-      {:bsv, github: "slashrsm/bsv-ex"}
+      {:bsv, "~> 0.2.6"},
+      #{:bsv, github: "slashrsm/bsv-ex"}
     ]
   end
 end
