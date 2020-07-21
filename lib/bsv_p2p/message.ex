@@ -69,6 +69,7 @@ defmodule BsvP2p.Message do
     valid_checksum == actual_checksum
   end
 
+  # TODO generate?
   @spec get_command(String.t(), binary) :: __MODULE__.t()
   defp get_command("ping", payload), do: Command.Ping.from_payload(payload)
   defp get_command("pong", payload), do: Command.Pong.from_payload(payload)
@@ -87,6 +88,7 @@ defmodule BsvP2p.Message do
   defp get_command("mempool", payload), do: Command.Mempool.from_payload(payload)
   defp get_command("tx", payload), do: Command.Tx.from_payload(payload)
   defp get_command("block", payload), do: Command.Block.from_payload(payload)
+  defp get_command("reject", payload), do: Command.Reject.from_payload(payload)
 
   defp get_command(unknown_name, unknown_payload),
     do: %Command.Unknown{name: unknown_name, payload: unknown_payload}
