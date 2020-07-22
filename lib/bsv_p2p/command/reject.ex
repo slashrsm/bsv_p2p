@@ -47,16 +47,10 @@ defmodule BsvP2p.Command.Reject do
         command.data
     end
 
-    # TODO generate?
     @spec get_code(BsvP2p.Command.Reject.type_code()) :: pos_integer
-    defp get_code(:malformed), do: 0x01
-    defp get_code(:invalid), do: 0x10
-    defp get_code(:obsolete), do: 0x11
-    defp get_code(:duplicate), do: 0x12
-    defp get_code(:nonstandard), do: 0x40
-    defp get_code(:dust), do: 0x41
-    defp get_code(:insufficient_fee), do: 0x42
-    defp get_code(:checkpoint), do: 0x43
+    for {code, type} <- Module.get_attribute(BsvP2p.Command.Reject, :type_codes) do
+      defp get_code(unquote(type)), do: unquote(code)
+    end
   end
 
   @spec from_payload(binary) :: __MODULE__.t()

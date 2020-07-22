@@ -69,26 +69,14 @@ defmodule BsvP2p.Message do
     valid_checksum == actual_checksum
   end
 
-  # TODO generate?
   @spec get_command(String.t(), binary) :: __MODULE__.t()
-  defp get_command("ping", payload), do: Command.Ping.from_payload(payload)
-  defp get_command("pong", payload), do: Command.Pong.from_payload(payload)
-  defp get_command("verack", payload), do: Command.Verack.from_payload(payload)
-  defp get_command("version", payload), do: Command.Version.from_payload(payload)
-  defp get_command("sendheaders", payload), do: Command.Sendheaders.from_payload(payload)
-  defp get_command("feefilter", payload), do: Command.Feefilter.from_payload(payload)
-  defp get_command("getheaders", payload), do: Command.Getheaders.from_payload(payload)
-  defp get_command("headers", payload), do: Command.Headers.from_payload(payload)
-  defp get_command("getaddr", payload), do: Command.Getaddr.from_payload(payload)
-  defp get_command("addr", payload), do: Command.Addr.from_payload(payload)
-  defp get_command("inv", payload), do: Command.Inv.from_payload(payload)
-  defp get_command("getdata", payload), do: Command.Getdata.from_payload(payload)
-  defp get_command("notfound", payload), do: Command.Notfound.from_payload(payload)
-  defp get_command("getblocks", payload), do: Command.Getblocks.from_payload(payload)
-  defp get_command("mempool", payload), do: Command.Mempool.from_payload(payload)
-  defp get_command("tx", payload), do: Command.Tx.from_payload(payload)
-  defp get_command("block", payload), do: Command.Block.from_payload(payload)
-  defp get_command("reject", payload), do: Command.Reject.from_payload(payload)
+  for filename <- File.ls!("lib/bsv_p2p/command") do
+    command_name = String.trim_trailing(filename, ".ex")
+    module_name = String.to_atom("Elixir.BsvP2p.Command.#{String.capitalize(command_name)}")
+
+    defp get_command(unquote(command_name), payload),
+      do: unquote(module_name).from_payload(payload)
+  end
 
   defp get_command(unknown_name, unknown_payload),
     do: %Command.Unknown{name: unknown_name, payload: unknown_payload}

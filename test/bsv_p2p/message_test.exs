@@ -95,6 +95,14 @@ defmodule BsvP2p.Util.MessageTest do
              )
   end
 
+  test "Message.parse/2 for unknown command" do
+    assert {[{:ok, :test, %Command.Unknown{name: "foo", payload: <<>>}}], ""} ==
+             Message.parse(
+               <<244, 229, 243, 244, "foo", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 93, 246, 224,
+                 226>>
+             )
+  end
+
   test "Message.create_payload/1" do
     assert @version_payload == Message.create_payload(@version_command, :main)
   end
