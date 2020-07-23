@@ -72,10 +72,12 @@ defmodule BsvP2p.Message do
   @spec get_command(String.t(), binary) :: __MODULE__.t()
   for filename <- File.ls!("lib/bsv_p2p/command") do
     command_name = String.trim_trailing(filename, ".ex")
-    module_name = String.to_atom("Elixir.BsvP2p.Command.#{String.capitalize(command_name)}")
+    if command_name !== "unknown" do
+      module_name = String.to_atom("Elixir.BsvP2p.Command.#{String.capitalize(command_name)}")
 
-    defp get_command(unquote(command_name), payload),
-      do: unquote(module_name).from_payload(payload)
+      defp get_command(unquote(command_name), payload),
+        do: unquote(module_name).from_payload(payload)
+    end
   end
 
   defp get_command(unknown_name, unknown_payload),
