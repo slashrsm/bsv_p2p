@@ -9,6 +9,8 @@ A client library to talk to the Bitcoin (BSV) server network (also known as Peer
 
 See [docs on the official wiki](https://wiki.bitcoinsv.io/index.php/Peer-To-Peer_Protocol) for more info about the protocol and message types.
 
+**Warning:** [Forked version](https://github.com/slashrsm/bsv-ex/) of `:bsv` library should be used in order for this library to work. There are two pull requests against the upstream library that this library depends on ([[1](https://github.com/libitx/bsv-ex/pull/3)], [[2](https://github.com/libitx/bsv-ex/pull/4)]).
+
 ## Implemented features
 
 - Constructing and parsing of various messages

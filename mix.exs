@@ -49,7 +49,8 @@ defmodule BsvP2p.MixProject do
       {:mock, "~> 0.3.5", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
       {:connection, "~> 1.0.4"},
-      {:bsv, github: "slashrsm/bsv-ex"}
+      #{:bsv, github: "slashrsm/bsv-ex"}
+      {:bsv, "~> 0.2.6"},
     ]
   end
 
