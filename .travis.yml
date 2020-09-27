@@ -1,0 +1,26 @@
+language: elixir
+
+elixir:
+  - 1.10
+
+otp_release:
+  - 22.0.7
+
+cache:
+  directories:
+    - _build
+    - deps
+    - priv
+
+install:
+  - mix local.hex --force
+  - mix local.rebar --force
+  - mix deps.get
+
+before_script:
+  - mkdir -p priv/plts
+  - travis_wait mix dialyzer --plt
+
+script:
+  - mix check
+  - MIX_ENV=test mix coveralls.travis

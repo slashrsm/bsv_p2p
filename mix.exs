@@ -2,13 +2,13 @@ defmodule BsvP2p.MixProject do
   use Mix.Project
 
   defp description do
-    "Bitcoin SV server network implementation."
+    "Bitcoin SV server network client."
   end
 
   def project do
     [
       app: :bsv_p2p,
-      version: "0.1.0-alpha1",
+      version: "0.1.0-alpha2",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       source_url: "https://github.com/slashrsm/bsv_p2p",
@@ -58,8 +58,7 @@ defmodule BsvP2p.MixProject do
       maintainers: ["Janez Urevc"],
       licenses: ["MIT"],
       links: %{github: "https://github.com/slashrsm/bsv_p2p"},
-      files:
-        ~w(lib LICENSE.md mix.exs README.md)
+      files: ~w(lib LICENSE.md mix.exs README.md)
     ]
   end
 end
