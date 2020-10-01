@@ -22,6 +22,7 @@ See [docs on the official wiki](https://wiki.bitcoinsv.io/index.php/Peer-To-Peer
   - Mempool
   - Ping/Pong
   - Version/Verack (connection negotiation)
+  - Protoconf
 
 ## Missing/planned features
 
