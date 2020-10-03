@@ -11,7 +11,7 @@ defmodule BsvP2p.Util.Services do
     0x400 => :node_network_limited
   }
 
-  @type t :: :node_netowrk | :node_getutxo | :node_bloom | :node_network_limited
+  @type t :: :node_network | :node_getutxo | :node_bloom | :node_network_limited
 
   @spec get_payload([__MODULE__.t()]) :: binary()
   def get_payload(services) do

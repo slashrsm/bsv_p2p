@@ -26,10 +26,16 @@ See [docs on the official wiki](https://wiki.bitcoinsv.io/index.php/Peer-To-Peer
 
 ## Missing/planned features
 
+### Short term
+
 - Compact blocks
 - Bloom filtering
 - GenServer for peer connection handling
 - Connection pools
+
+### Long term
+
+- Server/listening for incoming connections
 
 ## Code contributions
 
