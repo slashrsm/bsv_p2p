@@ -19,13 +19,15 @@ defmodule BsvP2p.Peer do
           host: String.t(),
           port: non_neg_integer(),
           network: NetworkMagic.t(),
-          rest: binary()
+          rest: binary(),
+          subscribers: pid()
         }
 
   def start_link(options \\ []) do
     host = Keyword.get(options, :host, "localhost")
     port = Keyword.get(options, :port, 8333)
     network = Keyword.get(options, :network, :main)
+    subscribers = Keyword.get(options, :subscribers, [])
 
     Connection.start_link(__MODULE__, %{
       socket: nil,
@@ -36,7 +38,8 @@ defmodule BsvP2p.Peer do
       host: host,
       port: port,
       network: network,
-      rest: <<>>
+      rest: <<>>,
+      subscribers: subscribers
     })
   end
 
@@ -118,6 +121,10 @@ defmodule BsvP2p.Peer do
       when command_network == network do
     Logger.debug("Got message: #{Command.name(command)}")
     state = process_command(command, state)
+
+    state.subscribers
+    |> Enum.each(fn subscriber -> send(subscriber, {:new_message, command}) end)
+
     process_commands(rest, network, state)
   end
 
